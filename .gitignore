@@ -2,3 +2,4 @@ tensorboard_logs/*
 pickled_batches/*
 dictionary/*
 .DS_Store
+__pycache__

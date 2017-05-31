@@ -1,4 +1,4 @@
-import nn as knn
+import knn as knn
 
 find_k_nearest_words = knn.load_model()
 top_k = 5
