@@ -4,8 +4,8 @@ import pickle
 
 ####### INITALISE DICTIONARY ###########
 
-dictionary = pickle.load( open( "./dictionary/dictionary.p", "rb" ) )
-reverse_dictionary = pickle.load( open( "./dictionary/reverse_dictionary.p", "rb" ) )
+dictionary = pickle.load( open( "../../hashtagembeddings/dictionary/dictionary.p", "rb" ) )
+reverse_dictionary = pickle.load( open( "../../hashtagembeddings/dictionary/reverse_dictionary.p", "rb" ) )
 
 ###### INITIALISE MODEL ###########
 
@@ -13,7 +13,7 @@ def load_model():
     with tf.device('/cpu:0'):
         print ('Model Initalizing.....')
         #First let's load meta graph and restore weights
-        saver = tf.train.import_meta_graph('./tensorboard_logs/300k_lowercase_corrected/model.ckpt-6520000.meta')
+        saver = tf.train.import_meta_graph('../../hashtagembeddings/tensorboard_logs/300k_lowercase_corrected/model.ckpt-6520000.meta')
         print ('Model Initalized')
 
         # Get default graph (supply your custom graph if you have one)
@@ -23,7 +23,7 @@ def load_model():
 
         print ('Initialising embeddings...')
         # To initialize variable values with saved data
-        saver.restore(sess,tf.train.latest_checkpoint('./tensorboard_logs/300k_lowercase_corrected/'))
+        saver.restore(sess,tf.train.latest_checkpoint('../../hashtagembeddings/tensorboard_logs/300k_lowercase_corrected/'))
         print ('Initialised embeddings')
 
         # # Compute the cosine similarity between chosen words and all embeddings.
@@ -36,7 +36,17 @@ def load_model():
             Function which takes an array of hashtags and a value for the number of neighbors to return
             Returns a dictionary with each word mapped to a list of its nearest neighbors
             '''
-            look_up_indices = [dictionary[word] for word in words_to_look_up]
+            # check if word in dictionary:
+            
+            look_up_indices = []
+            
+            for word in words_to_look_up:
+                try:
+                    index = dictionary[word.lower()]
+                    look_up_indices.append(index)
+                except KeyError:
+                    print('Word not in embedding space: ', word)
+                    continue
 
             print ('word: ', words_to_look_up)
             print ('word index: ', look_up_indices)
